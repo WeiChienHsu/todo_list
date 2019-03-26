@@ -1,9 +1,19 @@
 const express = require('express')
 const app = express()
+const mongoose = require('mongoose')
+const mock_data = require('./mock_data')
+const Task = require("./models/task")
+
 const bodyParser = require('body-parser')
 const port = 3000
-const mock_data = require('./mock_data')
 
+// Set up default mongoose connection
+const mongoDB = 'mongodb://localhost:27017/test';
+mongoose.connect(mongoDB, { useNewUrlParser: true });
+//Bind connection to error event (to get notification of connection errors)
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB Connection Failed: '))
+
+// Set up the body parser to convert requests
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
