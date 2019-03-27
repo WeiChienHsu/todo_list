@@ -62,6 +62,16 @@
 
 User requests a page. The server sends HTTP GET request. Retrieve all data from the TASK table from DB and return JSON formatted data to the client.
 
+```
+|| Client: /notes ||  ->  || Server ||  ->  || DB ||
+
+            GET all Request: /notes
+
+|| Client: /notes ||  <-  || Server ||  <-  || DB ||
+
+            Render: index page with `tasks` info
+```
+
 ### Insert a TASK into the Table
 
 #### Create a new TASK when the form is submitted
@@ -69,6 +79,17 @@ User requests a page. The server sends HTTP GET request. Retrieve all data from 
 - Path: ./
 
 User submits the form. Server grabs attributes from the form and uses them to insert a TASK into DB.
+
+```
+|| Client: /notes ||  ->  || Server ||  ->  || DB ||
+
+            POST Request: /notes with `req.body`
+
+|| Client: /notes ||  <-  || Server || 
+
+            Redirect: /notes
+```
+
 
 ### Edit a stored TASK
 
@@ -80,11 +101,32 @@ User selected the TASK. Server retrieves the existing information from selected 
 
 `(I am going to handle this updaing behavior in the same page)`
 
+```
+|| Client: /notes ||  ->  || Server ||  ->  || DB ||
+
+            GET one Request: /notes/:id/edit 
+
+|| Client: /notes/:id/edit ||  <-  || Server ||  <-  || DB ||
+
+            render: edit page with `task` info 
+            (did not use redirect since we have been at /edit page)
+```
+
 #### Update the information for the selected TASK
 - HTTP: POST 
 - Path: ./edit/:id
 
 User submits the form. Server grabs attributes from the form and uses them to update a TASK in DB by its id.
+
+```
+|| Client: /notes/:id/edit ||  ->  || Server ||  ->  || DB ||
+
+            PUT one Request: /notes/:id with `req.body` and `req.params`
+
+|| Client: /notes ||  <-  || Server ||  <-  || DB ||
+
+            Redirect: index page
+```
 
 ### Delete a stored TASK
 
@@ -94,6 +136,18 @@ User submits the form. Server grabs attributes from the form and uses them to up
 
 User selected the TASK. Server grabs id of that TASK and deletes that TASK from the DB.
 
+
+```
+|| Client: /notes ||  ->  || Server ||  ->  || DB ||
+
+            DELETE one Request: /notes/:id
+
+|| Client: /notes ||  <-  || Server ||     || DB ||
+
+            Redirect: index page
+```
+
+
 ### Toggle the status of a TASK (finished: true/false)
 
 #### Toggle the status of a TASK 
@@ -101,6 +155,8 @@ User selected the TASK. Server grabs id of that TASK and deletes that TASK from 
 - Path: ./:id
 
 User selected the finished box for a specific TASK. Server grabs id of that TASK and toggle the value of "finished" for that TASK from the DB.
+
+**How to toggle in the same Page?**
 
 ***
 
