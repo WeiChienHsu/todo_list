@@ -3,9 +3,13 @@ const app = express()
 const mongoose = require('mongoose')
 // const mock_data = require('./mock_data')
 const Task = require("./models/task")
+const exphbs = require('express-handlebars')
 
 const bodyParser = require('body-parser')
 const port = 3000
+
+app.engine('handlebars', exphbs({defaultLayout: 'main'}))
+app.set('view engine', 'handlebars')
 
 // Set up default mongoose connection
 const mongoDB = 'mongodb://localhost:27017/todo-project';
@@ -24,8 +28,7 @@ app.get('/notes', (req, res) => {
       res.status(500).send(err);
       return
     }
-    // console.log(tasks)
-    res.send(tasks)
+    res.render('index', { tasks: tasks })
   })
 });
 
