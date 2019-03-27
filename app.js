@@ -34,24 +34,22 @@ app.get('/notes', (req, res) => {
 
 /* Create: Create a new TASK when the form is submitted */
 app.post('/notes', (req, res) => {
-  const data = req.body /* JSON Object */
-  const new_title = data.title
-  const new_finished = data.finished
+  const new_title = req.body.title_input /* JSON Object */
   const new_createdAt = new Date().toJSON().slice(0,10).replace(/-/g,'/');
   const newTask = new Task({
     title: new_title,
     createdAt: new_createdAt,
-    finished: new_finished
+    finished: false
   })
 
   newTask.save()
     .then((docs) => {
-      console.log("Store successfully: ", docs)
+      console.log("Store successfully.")
     }, (err) => {
       console.error(err)
     })
   
-  res.send(newTask)
+  res.redirect("/notes")
 });
 
 /* Edit	: Click Edit to Select specific TASK and direct to the edit page */
