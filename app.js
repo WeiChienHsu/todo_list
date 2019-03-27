@@ -48,7 +48,6 @@ app.post('/notes', (req, res) => {
     }, (err) => {
       console.error(err)
     })
-  
   res.redirect("/notes")
 });
 
@@ -61,7 +60,7 @@ app.get('/notes/:id/edit', (req, res) => {
       console.error(err);
     }
     if(task) {
-      res.send(task)
+      res.render('edit', { task: task })
     }
     else {
       res.send("Task not found!")

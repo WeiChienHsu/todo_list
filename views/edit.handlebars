@@ -1,0 +1,10 @@
+<div class = "container">
+<h1>Edit Task:</h1>
+    <form id="update-task" action="/edit?_method=PUT" method="post">
+    <div class="form-group">
+        <label for="fname">Title:</label>
+        <input class="form-control" type="text" name="title" value="{{task.title}}" required>
+    </div>
+    <button class="form-control btn btn-default btn-success" type = "submit">Update</button> 
+    </form>
+</div>
