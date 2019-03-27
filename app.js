@@ -1,14 +1,14 @@
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
-const mock_data = require('./mock_data')
+// const mock_data = require('./mock_data')
 const Task = require("./models/task")
 
 const bodyParser = require('body-parser')
 const port = 3000
 
 // Set up default mongoose connection
-const mongoDB = 'mongodb://localhost:27017/test';
+const mongoDB = 'mongodb://localhost:27017/todo-project';
 mongoose.connect(mongoDB, { useNewUrlParser: true });
 //Bind connection to error event (to get notification of connection errors)
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB Connection Failed: '))
@@ -19,33 +19,53 @@ app.use(bodyParser.json())
 
 /* Index: display a list of all TASKs */
 app.get('/notes', (req, res) => {
-  // res.send('GET HTTP method on notes resource.')
-  res.send(mock_data)
+  Task.find((err, tasks) => {
+    if(err) {
+      res.status(500).send(err);
+      return
+    }
+    console.log(tasks)
+    res.send(tasks)
+  })
 });
 
 /* Create: Create a new TASK when the form is submitted */
 app.post('/notes', (req, res) => {
   const data = req.body /* JSON Object */
-  const id = mock_data.length + 1 
-  const title = data.title
-  const createdAt = data.createdAt
-  const finished = data.finished
-  /* Push into the mock array */
-  mock_data.push({
-    "id": id,
-    "title": title,
-    "createdAt": createdAt,
-    "finished": finished
+  const new_title = data.title
+  const new_finished = data.finished
+  const new_createdAt = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+  const newTask = new Task({
+    title: new_title,
+    createdAt: new_createdAt,
+    finished: new_finished
   })
-  res.send('POST HTTP method on notes resource.')
+
+  newTask.save()
+    .then((docs) => {
+      console.log("Store successfully: ", docs)
+    }, (err) => {
+      console.error(err)
+    })
+  
+  res.send(newTask)
 });
 
 /* Edit	: Click Edit to Select specific TASK and direct to the edit page */
 /* @return: {"id":1,"title":"Feedfire","createdAt":"11/13/2018","finished":true} */
 app.get('/notes/:id/edit', (req, res) => {
   const edit_id = req.params.id
-  const selected_task = mock_data[edit_id - 1]
-  res.send(selected_task)
+  Task.findOne({id: edit_id}, (err, task) => {
+    if(err) {
+      console.error(err);
+    }
+    if(task) {
+      res.send(task)
+    }
+    else {
+      res.send("Task not found!")
+    }
+  })
 });
 
 /* Update: update the information for the selected TASK */
