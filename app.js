@@ -122,7 +122,7 @@ app.patch('/notes/:id', (req, res) => {
         if(err) console.log(err)
       })
       console.log(`The status of task id: ${selected_id} has been updated to ${task.finished}.`)
-      res.send(task)
+      res.redirect("/notes")
     }
     else {
       res.send("Task not found!")
