@@ -24,7 +24,7 @@ app.get('/notes', (req, res) => {
       res.status(500).send(err);
       return
     }
-    console.log(tasks)
+    // console.log(tasks)
     res.send(tasks)
   })
 });
@@ -73,13 +73,25 @@ app.put('/notes/:id', (req, res) => {
   /* Update the data in the db -> using the APIs form mongosses */
   const edit_id = req.params.id
   const new_title = req.body.title
-  const new_createdAt = req.body.createdAt
   const new_finished = req.body.finished
-
-  mock_data[edit_id - 1].title = new_title
-  mock_data[edit_id - 1].createdAt = new_createdAt
-  mock_data[edit_id - 1].finished = new_finished
-  res.send(`PUT HTTP method on notes/${req.params.id} resource.`)
+  Task.findOne({id: edit_id}, (err, task) => {
+    if(err) {
+      console.error(err);
+    }
+    if(task) {
+      /* Update the Task */
+      task.title = new_title
+      task.finished = new_finished
+      task.save((err) => {
+        if(err) console.log(err)
+      })
+      console.log(`Task id: ${edit_id} has been updated.`)
+      res.send(task)
+    }
+    else {
+      res.send("Task not found!")
+    }
+  })
 });
 
 /* <form method="POST" action="/update?_method=PUT">
@@ -92,24 +104,35 @@ app.put('/notes/:id', (req, res) => {
 app.delete('/notes/:id', (req, res) => {
   const selected_id = req.params.id
   /* delete the selcted id from db */
-  mock_data.forEach((item, index, object) => {
-    if(item.id == selected_id) {
-      object.splice(index, 1);
+  Task.deleteOne({id: selected_id}, (err, task) => {
+    if(err) {
+      console.error(err);
     }
-  });
-  res.send(`DELETE HTTP method on notes/${req.params.id} resource.`)
+  })
+  res.send(`Task id: ${edit_id} has been updated.`) //TODO: what should've reture
 });
 
 /* Toggle: toggle the selected TASK */
 app.patch('/notes/:id', (req, res) => {
   const selected_id = req.params.id
   /* toggle the finished value to the selcted id from db */
-  mock_data.forEach((item, index, object) => {
-    if(item.id == selected_id) {
-      item.finished = !item.finished
+  Task.findOne({id: selected_id}, (err, task) => {
+    if(err) {
+      console.error(err);
     }
-  });
-  res.send(`PATCH HTTP method on notes/${req.params.id} resource.`)
+    if(task) {
+      /* Update the status of finished */
+      task.finished = !task.finished
+      task.save((err) => {
+        if(err) console.log(err)
+      })
+      console.log(`The status of task id: ${selected_id} has been updated to ${task.finished}.`)
+      res.send(task)
+    }
+    else {
+      res.send("Task not found!")
+    }
+  })
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
