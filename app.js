@@ -104,7 +104,7 @@ app.delete('/notes/:id', (req, res) => {
       console.error(err);
     }
   })
-  res.send(`Task id: ${edit_id} has been updated.`) //TODO: what should've reture
+  res.redirect("/notes")
 });
 
 /* Toggle: toggle the selected TASK */

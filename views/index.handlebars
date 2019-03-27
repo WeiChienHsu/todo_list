@@ -30,8 +30,13 @@
           <td>{{createdAt}}</td>
           <td>{{finished}}</td>
           <td><button class= "btn btn-default btn-info">Marked</button></td>
+
           <td><a href = "/notes/{{id}}/edit"><button class= "btn btn-default btn-primary" >Edit</button></a></td>
-          <td><button class= "btn btn-default btn-danger">Delete</button></td>
+          
+          <form id="delete-task" action="/notes/{{id}}/?_method=DELETE" method="POST">
+            <td><button class= "btn btn-default btn-danger" onclick="return confirm('Are you sure you want to delete this task?');" type = "submit">Delete</button></td>
+          </form>
+          
         </tr>
         {{/each}}  
       </tbody>
