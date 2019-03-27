@@ -184,19 +184,19 @@ In this product, we only have one kind of user.
 - [ ] The length of this bar cannot be changed.
 
 #### Insert a TASK into the Table
-- [ ] When the user clicks "Add," it should check if the user leaves the bar blank.
-- [ ] Created time of the TASK should be recorded.
-- [ ] After the user clicks "Add," the current TASK will be stored into DB or Local Storage.
-- [ ] Contents might not lose even user close the browser.
+- [X] When the user clicks "Add," it should check if the user leaves the bar blank.
+- [X] Created time of the TASK should be recorded.
+- [X] After the user clicks "Add," the current TASK will be stored into DB or Local Storage.
+- [X] Contents might not lose even user close the browser.
 
 #### Edit a stored TASK
-- [ ] The user can change the content of the TASK selected by the user.
+- [X] The user can change the content of the TASK selected by the user.
 - [ ] The user will directly edit the TASK in the TASK bar.
-- [ ] The user can store the content after edited, and it still checks if the input is valid.
+- [X] The user can store the content after edited, and it still checks if the input is valid.
 
 #### Delete a stored TASK
-- [ ] The user can delete a selected TASK from the List.
-- [ ] When the user clicks deletes, it should double check with the user.
+- [X] The user can delete a selected TASK from the List.
+- [X] When the user clicks deletes, it should double check with the user.
 
 #### MARK a TASK as finished
 - [ ] The user can select the status of the TASK to either FINISHED/UNFINISHED.
