@@ -4,10 +4,7 @@ const Schema = mongoose.Schema
 
 const TaskSchema = new Schema({
   title: String,
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
+  createdAt: String,
   finished: Boolean
 });
 
