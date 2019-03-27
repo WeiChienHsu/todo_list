@@ -5,11 +5,13 @@ const mongoose = require('mongoose')
 const Task = require("./models/task")
 const exphbs = require('express-handlebars')
 
+const methodOverride = require('method-override');
 const bodyParser = require('body-parser')
 const port = 3000
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}))
 app.set('view engine', 'handlebars')
+app.use(methodOverride('_method'));
 
 // Set up default mongoose connection
 const mongoDB = 'mongodb://localhost:27017/todo-project';
@@ -72,8 +74,8 @@ app.get('/notes/:id/edit', (req, res) => {
 app.put('/notes/:id', (req, res) => {
   /* Update the data in the db -> using the APIs form mongosses */
   const edit_id = req.params.id
-  const new_title = req.body.title
-  const new_finished = req.body.finished
+  const new_title = req.body.title_input
+
   Task.findOne({id: edit_id}, (err, task) => {
     if(err) {
       console.error(err);
@@ -81,24 +83,17 @@ app.put('/notes/:id', (req, res) => {
     if(task) {
       /* Update the Task */
       task.title = new_title
-      task.finished = new_finished
       task.save((err) => {
         if(err) console.log(err)
       })
       console.log(`Task id: ${edit_id} has been updated.`)
-      res.send(task)
+      res.redirect("/notes")
     }
     else {
       res.send("Task not found!")
     }
   })
 });
-
-/* <form method="POST" action="/update?_method=PUT">
-  // inputs to change the data go here
-  <button type="submit">Update</button>
-</form> 
-*/
 
 /* Delete: delete the selected TASK */
 app.delete('/notes/:id', (req, res) => {

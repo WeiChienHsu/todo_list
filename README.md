@@ -113,7 +113,7 @@ User selected the TASK. Server retrieves the existing information from selected 
 ```
 
 #### Update the information for the selected TASK
-- HTTP: POST 
+- HTTP: PUT 
 - Path: ./edit/:id
 
 User submits the form. Server grabs attributes from the form and uses them to update a TASK in DB by its id.
@@ -127,6 +127,15 @@ User submits the form. Server grabs attributes from the form and uses them to up
 
             Redirect: index page
 ```
+
+**Method PUT is not allowed by Access-Control-Allow-Methods in preflight response.**
+
+```
+Refused to load the font '<URL>' because it violates the following Content Security Policy directive: "default-src 'self'". Note that 'font-src' was not explicitly set, so 'default-src' is used as a fallback.
+```
+
+Solved by using `method-override` npm library.
+
 
 ### Delete a stored TASK
 
