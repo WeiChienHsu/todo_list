@@ -18,8 +18,9 @@ app.set('view engine', 'handlebars')
 // Set up default mongoose connection
 const mongoDB = 'mongodb://localhost:27017/todo-project';
 mongoose.connect(mongoDB, { useNewUrlParser: true });
-//Bind connection to error event (to get notification of connection errors)
-mongoose.connection.on('error', console.error.bind(console, 'MongoDB Connection Failed: '))
+mongoose.connection.on('error', () => {
+  console.error('MongoDB Connection Failed.')
+})
 
 /* Index: display a list of all TASKs */
 app.get('/notes', (req, res) => {
