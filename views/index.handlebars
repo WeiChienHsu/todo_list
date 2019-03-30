@@ -2,8 +2,8 @@
   <h2>Add new Task</h2>
   <form id="add-task" action="/notes" method="POST">
     <div class="form-group">
-      <label for="title_input">Title:</label>
-      <input class="form-control" type="text" name="title_input" required>
+      <label for="titleInput">Title:</label>
+      <input class="form-control" type="text" name="titleInput" required>
     </div>
     <button class="form-control btn btn-default btn-success" type="submit"> Submit </button>
   </form>
@@ -30,7 +30,7 @@
           <td>{{createdAt}}</td>
           <td>{{finished}}</td>
 
-          <form id="toggle-task" action="/notes/{{id}}/?_method=PATCH" method="POST">
+          <form id="toggleTask" action="/notes/{{id}}/?_method=PATCH" method="POST">
             <td><button class= "btn btn-default btn-info">Marked</button></td>
           </form>
 

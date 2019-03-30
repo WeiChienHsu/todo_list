@@ -35,11 +35,11 @@ app.get('/notes', (req, res) => {
 
 /* Create: Create a new TASK when the form is submitted */
 app.post('/notes', (req, res) => {
-  const new_title = req.body.title_input /* JSON Object */
-  const new_createdAt = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+  const newTitle = req.body.titleInput /* JSON Object */
+  const newCreatedAt = new Date().toJSON().slice(0,10).replace(/-/g,'/');
   const newTask = new Task({
-    title: new_title,
-    createdAt: new_createdAt,
+    title: newTitle,
+    createdAt: newCreatedAt,
     finished: false
   })
 
@@ -55,8 +55,8 @@ app.post('/notes', (req, res) => {
 /* Edit	: Click Edit to Select specific TASK and direct to the edit page */
 /* @return: {"id":1,"title":"Feedfire","createdAt":"11/13/2018","finished":true} */
 app.get('/notes/:id/edit', (req, res) => {
-  const edit_id = req.params.id
-  Task.findOne({id: edit_id}, (err, task) => {
+  const editId = req.params.id
+  Task.findOne({id: editId}, (err, task) => {
     if(err) {
       console.error(err);
     }
@@ -72,20 +72,20 @@ app.get('/notes/:id/edit', (req, res) => {
 /* Update: update the information for the selected TASK */
 app.put('/notes/:id', (req, res) => {
   /* Update the data in the db -> using the APIs form mongosses */
-  const edit_id = req.params.id
-  const new_title = req.body.title_input
+  const editId = req.params.id
+  const newTitle = req.body.titleInput
 
-  Task.findOne({id: edit_id}, (err, task) => {
+  Task.findOne({id: editId}, (err, task) => {
     if(err) {
       console.error(err);
     }
     if(task) {
       /* Update the Task */
-      task.title = new_title
+      task.title = newTitle
       task.save((err) => {
         if(err) console.log(err)
       })
-      console.log(`Task id: ${edit_id} has been updated.`)
+      console.log(`Task id: ${editId} has been updated.`)
       res.redirect("/notes")
     }
     else {
@@ -96,9 +96,9 @@ app.put('/notes/:id', (req, res) => {
 
 /* Delete: delete the selected TASK */
 app.delete('/notes/:id', (req, res) => {
-  const selected_id = req.params.id
+  const selectedId = req.params.id
   /* delete the selcted id from db */
-  Task.deleteOne({id: selected_id}, (err, task) => {
+  Task.deleteOne({id: selectedId}, (err, task) => {
     if(err) {
       console.error(err);
     }
@@ -108,9 +108,9 @@ app.delete('/notes/:id', (req, res) => {
 
 /* Toggle: toggle the selected TASK */
 app.patch('/notes/:id', (req, res) => {
-  const selected_id = req.params.id
+  const selectedId = req.params.id
   /* toggle the finished value to the selcted id from db */
-  Task.findOne({id: selected_id}, (err, task) => {
+  Task.findOne({id: selectedId}, (err, task) => {
     if(err) {
       console.error(err);
     }
@@ -120,7 +120,7 @@ app.patch('/notes/:id', (req, res) => {
       task.save((err) => {
         if(err) console.log(err)
       })
-      console.log(`The status of task id: ${selected_id} has been updated to ${task.finished}.`)
+      console.log(`The status of task id: ${selectedId} has been updated to ${task.finished}.`)
       res.redirect("/notes")
     }
     else {
