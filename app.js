@@ -1,27 +1,26 @@
 const express = require('express')
-const app = express()
 const mongoose = require('mongoose')
-// const mock_data = require('./mock_data')
 const Task = require("./models/task")
 const exphbs = require('express-handlebars')
-
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser')
+// const mock_data = require('./mock_data')
+
+const app = express()
 const port = 3000
 
+// Set up the body parser to convert requests
+app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.json())
+app.use(methodOverride('_method'));
 app.engine('handlebars', exphbs({defaultLayout: 'main'}))
 app.set('view engine', 'handlebars')
-app.use(methodOverride('_method'));
 
 // Set up default mongoose connection
 const mongoDB = 'mongodb://localhost:27017/todo-project';
 mongoose.connect(mongoDB, { useNewUrlParser: true });
 //Bind connection to error event (to get notification of connection errors)
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB Connection Failed: '))
-
-// Set up the body parser to convert requests
-app.use(bodyParser.urlencoded({extended: false}))
-app.use(bodyParser.json())
 
 /* Index: display a list of all TASKs */
 app.get('/notes', (req, res) => {
