@@ -27,7 +27,7 @@
         <tr>
           <th scope="row">{{@index}}</th>
           <td>{{title}}</td>
-          <td>{{createdAt}}</td>
+          <td>{{formatDate createdAt}}</td>
           <td>{{finished}}</td>
 
           <form id="toggleTask" action="/notes/{{id}}/?_method=PATCH" method="POST">

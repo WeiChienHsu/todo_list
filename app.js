@@ -1,9 +1,10 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const Task = require("./models/task")
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser')
+const Task = require("./models/task")
+const handlebarsHelpers = require('./helpers/handlebars')
 // const mock_data = require('./mock_data')
 
 const app = express()
@@ -12,7 +13,12 @@ const port = 3000
 // Set up the body parser to convert requests
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(methodOverride('_method'));
-app.engine('handlebars', exphbs({defaultLayout: 'main'}))
+
+// Set up the View engine by Handlebars
+app.engine('handlebars', exphbs({
+  defaultLayout: 'main',
+  helpers: handlebarsHelpers
+}))
 app.set('view engine', 'handlebars')
 
 // Set up default mongoose connection
@@ -35,7 +41,7 @@ app.get('/notes', (req, res) => {
 /* Create: Create a new TASK when the form is submitted */
 app.post('/notes', (req, res) => {
   const newTitle = req.body.titleInput /* JSON Object */
-  const newCreatedAt = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+  const newCreatedAt = new Date()
   const newTask = new Task({
     title: newTitle,
     createdAt: newCreatedAt,
@@ -71,6 +77,7 @@ app.put('/notes/:id', (req, res) => {
   /* Update the data in the db -> using the APIs form mongosses */
   const editId = req.params.id
   const newTitle = req.body.titleInput
+  const newCreatedAt = new Date()
 
   Task.findOne({_id: editId}, (err, task) => {
     if(err) {
@@ -81,6 +88,7 @@ app.put('/notes/:id', (req, res) => {
     }
     /* Update the Task */
     task.title = newTitle
+    task.createdAt = newCreatedAt
     task.save((err) => {
       if(err) console.log(err)
     })
