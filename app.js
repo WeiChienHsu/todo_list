@@ -26,10 +26,9 @@ mongoose.connection.on('error', () => {
 app.get('/notes', (req, res) => {
   Task.find((err, tasks) => {
     if(err) {
-      res.status(500).send(err);
-      return
+      return res.status(500).send(err);
     }
-    res.render('index', { tasks: tasks })
+    return res.render('index', { tasks: tasks })
   })
 });
 
@@ -47,9 +46,9 @@ app.post('/notes', (req, res) => {
     .then((docs) => {
       console.log("Store successfully.")
     }, (err) => {
-      console.error(err)
+      return res.send("DB error: ", err)
     })
-  res.redirect("/notes")
+  return res.redirect("/notes")
 });
 
 /* Edit	: Click Edit to Select specific TASK and direct to the edit page */
@@ -58,14 +57,12 @@ app.get('/notes/:id/edit', (req, res) => {
   const editId = req.params.id
   Task.findOne({id: editId}, (err, task) => {
     if(err) {
-      console.error(err);
+      return res.send("DB error: ", err)
     }
-    if(task) {
-      res.render('edit', { task: task })
+    if(!task) {
+      return res.send("Task not found!")
     }
-    else {
-      res.send("Task not found!")
-    }
+    return res.render('edit', { task: task })
   })
 });
 
@@ -77,20 +74,18 @@ app.put('/notes/:id', (req, res) => {
 
   Task.findOne({id: editId}, (err, task) => {
     if(err) {
-      console.error(err);
+      return res.send("DB error: ", err)
     }
-    if(task) {
-      /* Update the Task */
-      task.title = newTitle
-      task.save((err) => {
-        if(err) console.log(err)
-      })
-      console.log(`Task id: ${editId} has been updated.`)
-      res.redirect("/notes")
+    if(!task) {
+      return res.send("Task not found!")
     }
-    else {
-      res.send("Task not found!")
-    }
+    /* Update the Task */
+    task.title = newTitle
+    task.save((err) => {
+      if(err) console.log(err)
+    })
+    console.log(`Task id: ${editId} has been updated.`)
+    return res.redirect("/notes")
   })
 });
 
@@ -100,10 +95,10 @@ app.delete('/notes/:id', (req, res) => {
   /* delete the selcted id from db */
   Task.deleteOne({id: selectedId}, (err, task) => {
     if(err) {
-      console.error(err);
+      return res.send("DB error: ", err)
     }
   })
-  res.redirect("/notes")
+  return res.redirect("/notes")
 });
 
 /* Toggle: toggle the selected TASK */
@@ -112,20 +107,18 @@ app.patch('/notes/:id', (req, res) => {
   /* toggle the finished value to the selcted id from db */
   Task.findOne({id: selectedId}, (err, task) => {
     if(err) {
-      console.error(err);
+      return res.send("DB error: ", err)
     }
-    if(task) {
-      /* Update the status of finished */
-      task.finished = !task.finished
-      task.save((err) => {
-        if(err) console.log(err)
-      })
-      console.log(`The status of task id: ${selectedId} has been updated to ${task.finished}.`)
-      res.redirect("/notes")
+    if(!task) {
+      return res.send("Task not found!")
     }
-    else {
-      res.send("Task not found!")
-    }
+    /* Update the status of finished */
+    task.finished = !task.finished
+    task.save((err) => {
+      if(err) console.log(err)
+    })
+    console.log(`The status of task id: ${selectedId} has been updated to ${task.finished}.`)
+    return res.redirect("/notes")
   })
 });
 
