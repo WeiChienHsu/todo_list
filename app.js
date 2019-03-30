@@ -55,7 +55,7 @@ app.post('/notes', (req, res) => {
 /* @return: {"id":1,"title":"Feedfire","createdAt":"11/13/2018","finished":true} */
 app.get('/notes/:id/edit', (req, res) => {
   const editId = req.params.id
-  Task.findOne({id: editId}, (err, task) => {
+  Task.findOne({_id: editId}, (err, task) => {
     if(err) {
       return res.send("DB error: ", err)
     }
@@ -72,7 +72,7 @@ app.put('/notes/:id', (req, res) => {
   const editId = req.params.id
   const newTitle = req.body.titleInput
 
-  Task.findOne({id: editId}, (err, task) => {
+  Task.findOne({_id: editId}, (err, task) => {
     if(err) {
       return res.send("DB error: ", err)
     }
@@ -93,7 +93,7 @@ app.put('/notes/:id', (req, res) => {
 app.delete('/notes/:id', (req, res) => {
   const selectedId = req.params.id
   /* delete the selcted id from db */
-  Task.deleteOne({id: selectedId}, (err, task) => {
+  Task.deleteOne({_id: selectedId}, (err, task) => {
     if(err) {
       return res.send("DB error: ", err)
     }
@@ -105,7 +105,7 @@ app.delete('/notes/:id', (req, res) => {
 app.patch('/notes/:id', (req, res) => {
   const selectedId = req.params.id
   /* toggle the finished value to the selcted id from db */
-  Task.findOne({id: selectedId}, (err, task) => {
+  Task.findOne({_id: selectedId}, (err, task) => {
     if(err) {
       return res.send("DB error: ", err)
     }
