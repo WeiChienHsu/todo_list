@@ -105,8 +105,8 @@ app.delete('/notes/:id', (req, res) => {
     if(err) {
       return res.send("DB error: ", err)
     }
+    return res.redirect("/notes")
   })
-  return res.redirect("/notes")
 });
 
 /* Toggle: toggle the selected TASK */
@@ -123,10 +123,12 @@ app.patch('/notes/:id', (req, res) => {
     /* Update the status of finished */
     task.finished = !task.finished
     task.save((err) => {
-      if(err) console.log(err)
+      if(err) {
+        return res.send("DB error: ", err)
+      }
+      console.log(`The status of task id: ${selectedId} has been updated to ${task.finished}.`)
+      return res.redirect("/notes")
     })
-    console.log(`The status of task id: ${selectedId} has been updated to ${task.finished}.`)
-    return res.redirect("/notes")
   })
 });
 
