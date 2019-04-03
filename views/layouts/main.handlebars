@@ -17,11 +17,4 @@
 {{{body}}}
 
 </body>
-<script>
-Handlebars.registerHelper('formatDate', function(dateString) {
-    return new Handlebars.SafeString(
-        moment(dateString).format("MMM D").toUpperCase()
-    );
-});
-</script>
 </html>
