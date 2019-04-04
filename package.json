@@ -23,7 +23,6 @@
     "express-handlebars": "3.0.2",
     "method-override": "3.0.0",
     "mongoose": "5.4.20",
-    "mongoose-sequence": "5.0.1",
     "nodemon": "1.18.10"
   }
 }

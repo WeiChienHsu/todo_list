@@ -1,46 +1,50 @@
 const express = require('express')
-const app = express()
 const mongoose = require('mongoose')
-// const mock_data = require('./mock_data')
-const Task = require("./models/task")
 const exphbs = require('express-handlebars')
-
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser')
+const Task = require("./models/task")
+const handlebarsHelpers = require('./helpers/handlebars')
+// const mock_data = require('./mock_data')
+
+const app = express()
 const port = 3000
 
-app.engine('handlebars', exphbs({defaultLayout: 'main'}))
-app.set('view engine', 'handlebars')
+// Set up the body parser to convert requests
+app.use(bodyParser.urlencoded({extended: false}))
 app.use(methodOverride('_method'));
+
+// Set up the View engine by Handlebars
+app.engine('handlebars', exphbs({
+  defaultLayout: 'main',
+  helpers: handlebarsHelpers
+}))
+app.set('view engine', 'handlebars')
 
 // Set up default mongoose connection
 const mongoDB = 'mongodb://localhost:27017/todo-project';
 mongoose.connect(mongoDB, { useNewUrlParser: true });
-//Bind connection to error event (to get notification of connection errors)
-mongoose.connection.on('error', console.error.bind(console, 'MongoDB Connection Failed: '))
-
-// Set up the body parser to convert requests
-app.use(bodyParser.urlencoded({extended: false}))
-app.use(bodyParser.json())
+mongoose.connection.on('error', () => {
+  console.error('MongoDB Connection Failed.')
+})
 
 /* Index: display a list of all TASKs */
 app.get('/notes', (req, res) => {
   Task.find((err, tasks) => {
     if(err) {
-      res.status(500).send(err);
-      return
+      return res.status(500).send(err);
     }
-    res.render('index', { tasks: tasks })
+    return res.render('index', { tasks: tasks })
   })
 });
 
 /* Create: Create a new TASK when the form is submitted */
 app.post('/notes', (req, res) => {
-  const new_title = req.body.title_input /* JSON Object */
-  const new_createdAt = new Date().toJSON().slice(0,10).replace(/-/g,'/');
+  const newTitle = req.body.titleInput /* JSON Object */
+  const newCreatedAt = new Date()
   const newTask = new Task({
-    title: new_title,
-    createdAt: new_createdAt,
+    title: newTitle,
+    createdAt: newCreatedAt,
     finished: false
   })
 
@@ -48,85 +52,83 @@ app.post('/notes', (req, res) => {
     .then((docs) => {
       console.log("Store successfully.")
     }, (err) => {
-      console.error(err)
+      return res.send("DB error: ", err)
     })
-  res.redirect("/notes")
+  return res.redirect("/notes")
 });
 
 /* Edit	: Click Edit to Select specific TASK and direct to the edit page */
 /* @return: {"id":1,"title":"Feedfire","createdAt":"11/13/2018","finished":true} */
 app.get('/notes/:id/edit', (req, res) => {
-  const edit_id = req.params.id
-  Task.findOne({id: edit_id}, (err, task) => {
+  const editId = req.params.id
+  Task.findById(editId, (err, task) => {
     if(err) {
-      console.error(err);
+      return res.send("DB error: ", err)
     }
-    if(task) {
-      res.render('edit', { task: task })
+    if(!task) {
+      return res.send("Task not found!")
     }
-    else {
-      res.send("Task not found!")
-    }
+    return res.render('edit', { task: task })
   })
 });
 
 /* Update: update the information for the selected TASK */
 app.put('/notes/:id', (req, res) => {
   /* Update the data in the db -> using the APIs form mongosses */
-  const edit_id = req.params.id
-  const new_title = req.body.title_input
+  const editId = req.params.id
+  const newTitle = req.body.titleInput
+  const newCreatedAt = new Date()
 
-  Task.findOne({id: edit_id}, (err, task) => {
+  Task.findById(editId, (err, task) => {
     if(err) {
-      console.error(err);
+      return res.send("DB error: ", err)
     }
-    if(task) {
-      /* Update the Task */
-      task.title = new_title
-      task.save((err) => {
-        if(err) console.log(err)
-      })
-      console.log(`Task id: ${edit_id} has been updated.`)
-      res.redirect("/notes")
+    if(!task) {
+      return res.send("Task not found!")
     }
-    else {
-      res.send("Task not found!")
-    }
+    /* Update the Task */
+    task.title = newTitle
+    task.createdAt = newCreatedAt
+    task.save((err) => {
+      if(err) console.log(err)
+    })
+    console.log(`Task id: ${editId} has been updated.`)
+    return res.redirect("/notes")
   })
 });
 
 /* Delete: delete the selected TASK */
 app.delete('/notes/:id', (req, res) => {
-  const selected_id = req.params.id
+  const selectedId = req.params.id
   /* delete the selcted id from db */
-  Task.deleteOne({id: selected_id}, (err, task) => {
+  Task.findByIdAndDelete(selectedId, (err, task) => {
     if(err) {
-      console.error(err);
+      return res.send("DB error: ", err)
     }
+    return res.redirect("/notes")
   })
-  res.redirect("/notes")
 });
 
 /* Toggle: toggle the selected TASK */
 app.patch('/notes/:id', (req, res) => {
-  const selected_id = req.params.id
+  const selectedId = req.params.id
   /* toggle the finished value to the selcted id from db */
-  Task.findOne({id: selected_id}, (err, task) => {
+  Task.findById(selectedId, (err, task) => {
     if(err) {
-      console.error(err);
+      return res.send("DB error: ", err)
     }
-    if(task) {
-      /* Update the status of finished */
-      task.finished = !task.finished
-      task.save((err) => {
-        if(err) console.log(err)
-      })
-      console.log(`The status of task id: ${selected_id} has been updated to ${task.finished}.`)
-      res.redirect("/notes")
+    if(!task) {
+      return res.send("Task not found!")
     }
-    else {
-      res.send("Task not found!")
-    }
+    /* Update the status of finished */
+    task.finished = !task.finished
+    task.save((err) => {
+      if(err) {
+        return res.send("DB error: ", err)
+      }
+      console.log(`The status of task id: ${selectedId} has been updated to ${task.finished}.`)
+      return res.redirect("/notes")
+    })
   })
 });
 
