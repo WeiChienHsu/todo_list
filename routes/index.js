@@ -4,27 +4,29 @@ module.exports = (app) => {
   /* Index Page: Ask user to login  */
   app.get('/', (req, res) => {
     /* If not authenticated */
-    return res.send("This is Login Page")
+    return res.redirect('/users/login')
   })
 
   /* Login Page: Ask user to login  */
-  app.get('/login', (req, res) => {
-    return res.send("This is Login Page")
+  app.get('/users/login', (req, res) => {
+    return res.render('login')
   })
 
-  app.post('/login', (req, res) => {
+  app.post('/users/login', (req, res) => {
     // Used passport to authenticate the user input
     // Success -> redirect to /notes
     // Failure -> Redirect to login
+    console.log(req.body)
+    return res.send("Login data received")
   })
 
-  app.get('/signup', (req, res) => {
-    return res.send("This is Signup Page")
+  app.get('/users/signup', (req, res) => {
+    return res.render('signup');
   })
 
 
   /* Create a new Account */
-  app.post('/signup', (req, res) => {
+  app.post('/users/signup', (req, res) => {
     /* Check validation */
 
     /* Check if the user is in the DB */
@@ -32,9 +34,11 @@ module.exports = (app) => {
     /* Create a new user */
 
     /* Success -> Redirect to login */
+    console.log(req.body)
+    return res.send("Sign data received")
   })
 
-  app.get('/logout', (req, res) => {
+  app.get('users/logout', (req, res) => {
     // req.logout()
     /* Redirect to login page */
     return res.send("This is login Page")

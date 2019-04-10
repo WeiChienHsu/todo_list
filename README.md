@@ -174,11 +174,11 @@ User selected the finished box for a specific TASK. Server grabs id of that TASK
 
 | Route Name |  URL        |  HTTP Verb | Description |
 |:----------:|:-----------:|:----------:|:-----------:|
-| Signup     | /signup      |  GET       | Render the signup page |
-| Signup     | /signup      |  POST      |  Validate input -> Check if account exists -> Create User |
-| Login     | /login      |  GET       | Render the login page |
-| Login     | /login      |  POST       | Used passport library to authenticate user from local storage |
-| Logout    | /logout     | GET         | logout() and redirect to login page |
+| Signup     | /users/signup      |  GET       | Render the signup page |
+| Signup     | /users/signup      |  POST      |  Validate input -> Check if account exists -> Create User |
+| Login     | /users/login      |  GET       | Render the login page |
+| Login     | /users/login      |  POST       | Used passport library to authenticate user from local storage |
+| Logout    | /users/logout     | GET         | logout() and redirect to login page |
 
 ***
 
