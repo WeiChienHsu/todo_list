@@ -1,4 +1,4 @@
-const Task = require("./models/task")
+const Task = require("../models/task")
 
 let todoController = {
   getAllTasks: (req, res) => {
@@ -17,7 +17,7 @@ let todoController = {
 
   },
   toggleOneTaskById: (req, res) => {
-    
+
   }
 }
 
