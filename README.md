@@ -48,6 +48,7 @@
 | Toggle       | /notes/:id  | PATCH  | Toggle the status of selected TASK between finished: true/fasle  |
 | Get Details (if needed) | /notes/:id/detail | GET | Display the detail of selected TASK |
 
+
 ---
 
 ### Type a TASK in the insert bar
@@ -166,6 +167,18 @@ User selected the TASK. Server grabs id of that TASK and deletes that TASK from 
 User selected the finished box for a specific TASK. Server grabs id of that TASK and toggle the value of "finished" for that TASK from the DB.
 
 **How to toggle in the same Page?**
+
+***
+
+## Design of the Authentication
+
+| Route Name |  URL        |  HTTP Verb | Description |
+|:----------:|:-----------:|:----------:|:-----------:|
+| Signup     | /signup      |  GET       | Render the signup page |
+| Signup     | /signup      |  POST      |  Validate input -> Check if account exists -> Create User |
+| Login     | /login      |  GET       | Render the login page |
+| Login     | /login      |  POST       | Used passport library to authenticate user from local storage |
+| Logout    | /logout     | GET         | logout() and redirect to login page |
 
 ***
 
