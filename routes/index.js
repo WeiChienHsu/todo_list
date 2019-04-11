@@ -15,13 +15,17 @@ module.exports = (app, passport) => {
     return res.render('login')
   })
 
-  app.post('/users/login', (req, res) => {
-    // Used passport to authenticate the user input
-    // Success -> redirect to /notes
-    // Failure -> Redirect to login
-    console.log(req.body)
-    return res.send("Login data received")
-  })
+
+  app.post('/users/login',
+    passport.authenticate('local', {
+      failureRedirect: '/users/login', 
+      failureFlash: 'Invalid username or password.',
+      successFlash: 'Welcome!'}
+    ),
+    (req, res) => {
+      res.redirect('/notes')
+    }
+  )
 
   app.get('/users/signup', (req, res) => {
     return res.render('signup');

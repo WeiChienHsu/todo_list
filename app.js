@@ -7,9 +7,9 @@ const Task = require("./models/task")
 const handlebarsHelpers = require('./helpers/handlebars')
 const flash = require('connect-flash')
 const session = require('express-session')
-const passport = require('passport')
-// const mock_data = require('./mock_data')
+const passport = require('./config/passport')
 
+// const mock_data = require('./mock_data')
 const app = express()
 const port = 3000
 
