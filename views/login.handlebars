@@ -5,6 +5,10 @@
         <h4 class="modal-title w-100 font-weight-bold">Login</h4>
       </div>
 
+      {{#if success_msg}}
+        <div class="alert alert-info">{{success_msg}}</div>
+      {{/if}}
+
       <div class="modal-body mx-3">
         <div class="md-form mb-5 form-group">
           <label for="inputEmail"> Email </label>
