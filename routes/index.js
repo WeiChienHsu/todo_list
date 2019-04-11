@@ -1,4 +1,5 @@
 const todoController = require('../controllers/todoController')
+const userController = require('../controllers/userController')
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth')
@@ -11,9 +12,7 @@ module.exports = (app, passport) => {
   })
 
   /* Login Page: Ask user to login  */
-  app.get('/users/login', forwardAuthenticated, (req, res) => {
-    return res.render('login')
-  })
+  app.get('/users/login', forwardAuthenticated, userController.getLoginPage)
 
   app.post('/users/login', forwardAuthenticated,
     passport.authenticate('local', {
@@ -21,67 +20,15 @@ module.exports = (app, passport) => {
       failureFlash: 'Invalid username or password.',
       successFlash: 'Welcome!'}
     ),
-    (req, res) => {
-      res.redirect('/notes')
-    }
+    userController.userLogin
   )
 
-  app.get('/users/signup', forwardAuthenticated, (req, res) => {
-    return res.render('signup');
-  })
+  app.get('/users/signup', forwardAuthenticated, userController.getSignupPage)
 
   /* Create a new Account */
-  app.post('/users/signup', forwardAuthenticated, (req, res) => {
-    const { inputName, inputEmail, inputPassword, inputConfirmPassword } = req.body
-    let errors = []
-    /* Check validation */
-    if(inputPassword != inputConfirmPassword) {
-      errors.push({ msg: 'Password do not match.'})
-    }
-    
-    if(errors.length > 0) {
-      return res.render('signup', {errors, inputName, inputEmail, inputPassword, inputConfirmPassword})
-    }
-    else {
-      /* Check if the user is in the DB */  
-      User.findOne({email : inputEmail}).then(user => {
-        if (user) {
-          /* Found the user in the DB */
-          errors.push({ msg : 'Email already exists.'});
-          return res.render('signup', {errors, inputName, inputEmail, inputPassword, inputConfirmPassword})
-        }
-        else {
-          /* Create a new user */
-          const newUser = new User({
-            name: inputName,
-            email: inputEmail,
-            password: inputPassword 
-          });
+  app.post('/users/signup', forwardAuthenticated, userController.userSignup)
 
-          console.log("New User created: " + newUser)
-
-          bcrypt.genSalt(10, (err, salt) => {
-              bcrypt.hash(newUser.password, salt, (err, hash) => {
-                newUser.password = hash;
-                newUser
-                  .save()
-                  .then(user => {
-                    req.flash('success_msg', 'You are now registered and can log in.')
-                    return res.redirect('/users/login')
-                  })
-                  .catch(err => console.log(err));
-              })
-          });
-        }
-      })
-    } 
-  })
-
-  app.get('/users/logout', (req, res) => {
-    req.logout()
-    req.flash('success_msg', 'You are logged out.')
-    return res.redirect('/users/login')
-  })
+  app.get('/users/logout', userController.userLogout)
 
   /* Note Index: display a list of all TASKs */
   app.get('/notes', ensureAuthenticated, todoController.getAllTasks);
