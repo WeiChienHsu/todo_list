@@ -12,9 +12,9 @@ module.exports = (app, passport) => {
 
   /* Login Page: Ask user to login  */
   app.get('/users/login', (req, res) => {
+    console.log("Auth: " + req.isAuthenticated())
     return res.render('login')
   })
-
 
   app.post('/users/login',
     passport.authenticate('local', {
@@ -78,10 +78,10 @@ module.exports = (app, passport) => {
     } 
   })
 
-  app.get('users/logout', (req, res) => {
-    // req.logout()
-    /* Redirect to login page */
-    return res.send("This is login Page")
+  app.get('/users/logout', (req, res) => {
+    req.logout()
+    req.flash('success_msg', 'You are logged out.')
+    return res.redirect('/users/login')
   })
 
   /* Note Index: display a list of all TASKs */
