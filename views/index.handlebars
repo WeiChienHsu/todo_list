@@ -27,6 +27,10 @@
 
 <br>
 
+{{#if error_msg}}
+  <div class="alert alert-danger">{{error_msg}}</div>
+{{/if}}
+
 <div class="container">
   <h2>Add new Task</h2>
   <form id="add-task" action="/notes" method="POST">

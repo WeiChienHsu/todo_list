@@ -1,22 +1,21 @@
 const todoController = require('../controllers/todoController')
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
-
+const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth')
 
 module.exports = (app, passport) => {
   /* Index Page: Ask user to login  */
-  app.get('/', (req, res) => {
-    /* If not authenticated */
-    return res.redirect('/users/login')
+  app.get('/', ensureAuthenticated, (req, res) => {
+    /* If authenticated */
+    return res.redirect('/notes')
   })
 
   /* Login Page: Ask user to login  */
-  app.get('/users/login', (req, res) => {
-    console.log("Auth: " + req.isAuthenticated())
+  app.get('/users/login', forwardAuthenticated, (req, res) => {
     return res.render('login')
   })
 
-  app.post('/users/login',
+  app.post('/users/login', forwardAuthenticated,
     passport.authenticate('local', {
       failureRedirect: '/users/login', 
       failureFlash: 'Invalid username or password.',
@@ -27,12 +26,12 @@ module.exports = (app, passport) => {
     }
   )
 
-  app.get('/users/signup', (req, res) => {
+  app.get('/users/signup', forwardAuthenticated, (req, res) => {
     return res.render('signup');
   })
 
   /* Create a new Account */
-  app.post('/users/signup', (req, res) => {
+  app.post('/users/signup', forwardAuthenticated, (req, res) => {
     const { inputName, inputEmail, inputPassword, inputConfirmPassword } = req.body
     let errors = []
     /* Check validation */
@@ -85,14 +84,14 @@ module.exports = (app, passport) => {
   })
 
   /* Note Index: display a list of all TASKs */
-  app.get('/notes', todoController.getAllTasks);
+  app.get('/notes', ensureAuthenticated, todoController.getAllTasks);
 
   /* Create: Create a new TASK when the form is submitted */
-  app.post('/notes', todoController.createOneNewTask);
+  app.post('/notes', ensureAuthenticated, todoController.createOneNewTask);
 
   /* Edit	: Click Edit to Select specific TASK and direct to the edit page */
   /* @return: {"id":1,"title":"Feedfire","createdAt":"11/13/2018","finished":true} */
-  app.get('/notes/:id/edit', todoController.getOneTaskByIdToEdit);
+  app.get('/notes/:id/edit', ensureAuthenticated, todoController.getOneTaskByIdToEdit);
 
   /* Update: update the information for the selected TASK */
   app.put('/notes/:id', todoController.updateOneTaskById);
